@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>🎟️ Token Dashboard - Enhanced</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d2d5c 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            background: linear-gradient(45deg, #ffd700, #fff, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            animation: slideIn 1s ease-out;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(25px);
+            border-radius: 25px;
+            padding: 40px 30px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.15);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 35px 80px rgba(0,0,0,0.4);
+            border-color: rgba(255,215,0,0.3);
+        }
+
+        .live-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(45deg, #00ff88, #00cc6a);
+            color: #000;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(0,255,136,0.4);
+            animation: pulse 2s infinite;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .number {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 800;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+            animation: bounceIn 1.5s ease-out;
+        }
+
+        .current-token .number {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glowPulse 2s infinite;
+        }
+
+        .customer-info {
+            background: rgba(255,255,255,0.1);
+            padding: 15px 25px;
+            border-radius: 15px;
+            margin: 15px 0;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .waiting-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .waiting-item {
+            padding: 10px;
+            margin: 8px 0;
+            background: rgba(255,255,255,0.08);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: slideInUp 0.5s ease-out;
+        }
+
+        .waiting-item:nth-child(even) {
+            background: rgba(255,215,0,0.1);
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: #fff;
+            padding: 20px 30px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            margin-top: 20px;
+            box-shadow: 0 15px 35px rgba(255,107,107,0.4);
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(255,107,107,0.6);
+        }
+
+        .btn-next {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            box-shadow: 0 15px 35px rgba(78,205,196,0.4);
+        }
+
+        .btn-display {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            box-shadow: 0 15px 35px rgba(102,126,234,0.4);
+        }
+
+        .btn-reset {
+            background: linear-gradient(45deg, #ff4757, #ff3838);
+            box-shadow: 0 15px 35px rgba(255,71,87,0.4);
+        }
+
+        .qr-section {
+            grid-column: 1 / -1;
+            text-align: center;
+        }
+
+        .qr-img {
+            width: 220px;
+            height: 220px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 4px solid rgba(255,255,255,0.2);
+        }
+
+        .qr-img:hover {
+            transform: scale(1.05);
+            border-color: #ffd700;
+        }
+
+        .status-empty {
+            color: rgba(255,255,255,0.5);
+            font-style: italic;
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { opacity: 1; transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { 
+                text-shadow: 0 0 20px rgba(255,107,107,0.8), 0 0 30px rgba(255,107,107,0.6);
+            }
+            50% { 
+                text-shadow: 0 0 40px rgba(255,107,107,1), 0 0 60px rgba(255,107,107,0.8), 0 0 80px rgba(255,107,107,0.6);
+            }
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @media(max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .number {
+                font-size: 3rem;
+            }
+            .card {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1><i class="fas fa-ticket-alt"></i> Token Management System</h1>
+        <div style="font-size: 1.1rem; opacity: 0.8;">Live Queue Management with Customer Details</div>
+    </div>
+
+    <div class="container">
+        <!-- Queue Status -->
+        <div class="card">
+            <div class="live-badge">🔴 LIVE</div>
+            <h2><i class="fas fa-list"></i> Queue Status</h2>
+            <div class="number" id="queueLength">0</div>
+            <p style="color: rgba(255,255,255,0.8);">Customers Waiting</p>
+        </div>
+
+        <!-- Current Serving -->
+        <div class="card current-token">
+            <div class="live-badge">🔴 SERVING</div>
+            <h2><i class="fas fa-user-check"></i> Now Serving</h2>
+            <div class="number" id="currentToken">None</div>
+            <div class="customer-info" id="currentCustomer">No customer</div>
+        </div>
+
+        <!-- Get Token -->
+        <div class="card">
+            <h2><i class="fas fa-user-plus"></i> Register Customer</h2>
+            <p style="color: rgba(255,255,255,0.8); margin-bottom: 20px;">Name + Age Required</p>
+            <a href="/get_token" class="btn">
+                <i class="fas fa-ticket-alt"></i> Get Token
+            </a>
+        </div>
+
+        <!-- Next Token -->
+        <div class="card">
+            <h2><i class="fas fa-forward"></i> Call Next</h2>
+            <a href="/next" class="btn btn-next">
+                <i class="fas fa-play"></i> Serve Next Customer
+            </a>
+        </div>
+
+        <!-- Display Board -->
+        <div class="card">
+            <h2><i class="fas fa-tv"></i> Display Board</h2>
+            <a href="/display" target="_blank" class="btn btn-display">
+                <i class="fas fa-expand-arrows-alt"></i> Open Fullscreen
+            </a>
+        </div>
+
+        <!-- Reset -->
+        <div class="card">
+            <h2><i class="fas fa-redo"></i> Reset System</h2>
+            <a href="/reset" class="btn btn-reset" onclick="return confirm('Reset entire queue?')">
+                <i class="fas fa-trash"></i> Clear All
+            </a>
+        </div>
+
+        <!-- QR Scanner -->
+        <div class="card qr-section">
+            <h2><i class="fas fa-qrcode"></i> Mobile Scanner</h2>
+            <p style="color: rgba(255,255,255,0.8);">Scan QR → Enter Name & Age → Get Position</p>
+            <img src="{{ url_for('static', filename='qr.png') }}" class="qr-img" 
+                 onclick="window.open('/get_token', '_blank')" 
+                 title="Click to register">
+            <p style="color: rgba(255,255,255,0.7); font-size: 0.95rem; margin-top: 15px;">
+                📱 Works on all phones • Instant registration
+            </p>
+        </div>
+    </div>
+
+    <!-- Waiting List Modal -->
+    <div id="waitingModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; backdrop-filter: blur(10px);">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(255,255,255,0.1); backdrop-filter: blur(25px); border-radius: 25px; padding: 30px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;">
+            <h3 style="text-align: center; margin-bottom: 20px;"><i class="fas fa-list"></i> Waiting Customers</h3>
+            <div id="waitingListModal"></div>
+            <button onclick="closeWaitingModal()" style="width: 100%; background: #ff6b6b; color: white; border: none; padding: 15px; border-radius: 15px; font-size: 1.1rem; margin-top: 20px; cursor: pointer;">Close</button>
+        </div>
+    </div>
+
+    <script>
+        function updateLiveData() {
+            fetch('/api/status')
+            .then(res => res.json())
+            .then(data => {
+                // Update queue length
+                document.getElementById('queueLength').textContent = data.queue_length || 0;
+
+                // Update current token
+                const currentTokenEl = document.getElementById('currentToken');
+                const currentCustomerEl = document.getElementById('currentCustomer');
+                
+                if (data.current_token) {
+                    currentTokenEl.textContent = `#${data.current_token}`;
+                    currentTokenEl.classList.remove('status-empty');
+                    if (data.current_name) {
+                        currentCustomerEl.textContent = `${data.current_name} (${data.current_age})`;
+                        currentCustomerEl.classList.remove('status-empty');
+                    } else {
+                        currentCustomerEl.textContent = 'Customer details loading...';
+                    }
+                } else {
+                    currentTokenEl.textContent = 'None';
+                    currentTokenEl.classList.add('status-empty');
+                    currentCustomerEl.textContent = 'No customer being served';
+                    currentCustomerEl.classList.add('status-empty');
+                }
+
+                // Update waiting list in modal
+                updateWaitingList(data.waiting_list || []);
+            })
+            .catch(err => console.error('Update failed:', err));
+        }
+
+        function updateWaitingList(waitingList) {
+            const modalList = document.getElementById('waitingListModal');
+            if (waitingList.length > 0) {
+                modalList.innerHTML = waitingList.map((item, index) => 
+                    `<div class="waiting-item">
+                        <span><i class="fas fa-user"></i> #${item.token} ${item.name}</span>
+                        <span style="color: #ffd700;">${item.age}y • Pos ${index + 1}</span>
+                    </div>`
+                ).join('');
+            } else {
+                modalList.innerHTML = '<div style="text-align: center; color: rgba(255,255,255,0.5);">No customers waiting</div>';
+            }
+        }
+
+        function openWaitingModal() {
+            document.getElementById('waitingModal').style.display = 'block';
+        }
+
+        function closeWaitingModal() {
+            document.getElementById('waitingModal').style.display = 'none';
+        }
+
+        // Auto update every 2 seconds
+        setInterval(updateLiveData, 2000);
+        updateLiveData(); // Initial load
+
+        // Add click to view waiting list on queue card
+        document.querySelector('.card:nth-child(1)').onclick = openWaitingModal;
+    </script>
+</body>
+</html>
